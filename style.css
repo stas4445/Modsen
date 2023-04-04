@@ -47,6 +47,9 @@ body {
   width: 100%;
   cursor: pointer;
 }
+.answers__item:hover{
+  background-color: #7b9b9b;
+}
 .quiz__btn-next {
   cursor: pointer;
   font-size: 16px;
@@ -55,6 +58,10 @@ body {
   padding: 10px 0;
   border-radius: 6px;
   width: 100%;
+}
+.quiz__btn-next:hover {
+  background-color: #dbe9e9;
+  border-color: #dbe9e9;
 }
 
 @media (max-width: 730px) {
