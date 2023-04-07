@@ -63,6 +63,12 @@ body {
   background-color: #dbe9e9;
   border-color: #dbe9e9;
 }
+.wrong {
+  background-color: #ba4a4a;
+}
+.correct {
+  background-color: #4aba7c;
+}
 
 @media (max-width: 730px) {
   .quiz {
