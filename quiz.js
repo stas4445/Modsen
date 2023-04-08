@@ -122,7 +122,7 @@ function showQuestion(question) {
       let answerButton = document.createElement("button");
       answerButton.classList.add("answers__item");
       answerButton.innerText = answer.content;
-      answers.appendChild(answerButton);
+      answers.append(answerButton);
     })
 }
 
