@@ -110,24 +110,68 @@ let questionElement = document.getElementById("question");
 let answers = document.getElementById("answers");
 let numberOfQuestion = document.getElementById("number");
 let currentQuestionIndex = 0;
+let nextButton = document.getElementById("next-btn");
+let isAnswerSelected = false;
+let correctAnswersCounter = 0;
 
 function setNextQuestion() {
-   showQuestion(DATA[currentQuestionIndex]);
+  showQuestion(DATA[currentQuestionIndex]);
+}
+
+function hasMultipleCorrectAnswers(answers) {
+  return answers.filter(answer => answer.correct).length > 1;
 }
 
 function showQuestion(question) {
-   questionElement.innerText = question.question;
-   numberOfQuestion.innerText = `${currentQuestionIndex + 1}/${DATA.length}`;
-   question.answers.forEach(answer => {
-      let answerButton = document.createElement("button");
-      answerButton.classList.add("answers__item");
-      answerButton.innerText = answer.content;
-      answers.append(answerButton);
-    })
+  let multipleAnswers = hasMultipleCorrectAnswers(question.answers);
+
+  questionElement.innerText = question.question;
+  numberOfQuestion.innerText = `${currentQuestionIndex + 1}/${DATA.length}`;
+
+  if (multipleAnswers) {
+    questionElement.classList.add("item__question_withInfo");
+    let infoText = document.createElement("span");
+    infoText.classList.add("info");
+    infoText.innerHTML = "<br>* You can select more than one answer.";
+    questionElement.appendChild(infoText);
+  }
+
+  question.answers.forEach((answer) => {
+    let answerButton = document.createElement("button");
+
+    answerButton.classList.add("answers__item");
+    answerButton.innerText = answer.content;
+
+    answerButton.addEventListener("click", function () {
+      setStatus(answer, answerButton);
+      isAnswerSelected = true;
+    });
+
+    answers.append(answerButton);
+  });
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-   setNextQuestion();
- });
+function setStatus(answer, answerButton) {
+  if (answer.correct) {
+    answerButton.classList.add("correct"); 
+  } else {
+    answerButton.classList.add("wrong"); 
+  }
+}
 
-function selectAnswer() {}
+document.addEventListener("DOMContentLoaded", function () {
+  setNextQuestion();
+});
+
+nextButton.addEventListener("click", () => {
+  if (isAnswerSelected) {
+    answers.innerHTML = "";
+    currentQuestionIndex++;
+    setNextQuestion();
+    isAnswerSelected = false;
+  } else {
+    alert("Пожалуйста, выберите ответ.");
+  }
+});
+
+

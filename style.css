@@ -69,6 +69,13 @@ body {
 .correct {
   background-color: #4aba7c;
 }
+.info {
+  color: #8b8787;
+  font-size: 15px;
+}
+.item__question_withInfo {
+  margin-bottom: 25px;
+}
 
 @media (max-width: 730px) {
   .quiz {
