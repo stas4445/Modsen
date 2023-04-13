@@ -91,3 +91,21 @@ body {
     grid-template-columns: repeat(1, 1fr);
   }
 }
+
+.quiz__btn-restart {
+  display: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #535353;
+  border: 1px #c9d9d9 solid;
+  padding: 10px 0;
+  border-radius: 6px;
+  width: 100%;
+}
+.quiz__btn-restart:hover {
+  background-color: #dbe9e9;
+  border-color: #dbe9e9;
+}
+.hide {
+  display: none;
+}

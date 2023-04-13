@@ -111,6 +111,7 @@ let answers = document.getElementById("answers");
 let numberOfQuestion = document.getElementById("number");
 let currentQuestionIndex = 0;
 let nextButton = document.getElementById("next-btn");
+let restartButton = document.getElementById("restart-btn");
 let isAnswerSelected = false;
 let correctAnswersCounter = 0;
 
@@ -119,7 +120,7 @@ function setNextQuestion() {
 }
 
 function hasMultipleCorrectAnswers(answers) {
-  return answers.filter(answer => answer.correct).length > 1;
+  return answers.filter((answer) => answer.correct).length > 1;
 }
 
 function showQuestion(question) {
@@ -129,11 +130,10 @@ function showQuestion(question) {
   numberOfQuestion.innerText = `${currentQuestionIndex + 1}/${DATA.length}`;
 
   if (multipleAnswers) {
-    questionElement.classList.add("item__question_withInfo");
     let infoText = document.createElement("span");
     infoText.classList.add("info");
     infoText.innerHTML = "<br>* You can select more than one answer.";
-    questionElement.appendChild(infoText);
+    questionElement.append(infoText);
   }
 
   question.answers.forEach((answer) => {
@@ -153,25 +153,96 @@ function showQuestion(question) {
 
 function setStatus(answer, answerButton) {
   if (answer.correct) {
-    answerButton.classList.add("correct"); 
+    answerButton.classList.add("correct");
+    correctAnswersCounter++;
   } else {
-    answerButton.classList.add("wrong"); 
+    answerButton.classList.add("wrong");
+  }
+
+  disableAnswerButtons();
+  nextButton.disabled = false;
+
+  if (currentQuestionIndex === DATA.length - 1) {
+    nextButton.innerText = "Next";
+  }
+
+}
+
+function setStatus(answer, answerButton) {
+  if (answer.correct) {
+    answerButton.classList.add("correct");
+    correctAnswersCounter++;
+  } else {
+    answerButton.classList.add("wrong");
+  }
+
+  disableAnswerButtons();
+  nextButton.disabled = false;
+
+  if (currentQuestionIndex === DATA.length - 1) {
+    nextButton.innerText = "Next";
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  setNextQuestion();
-});
+function disableAnswerButtons() {
+  let answerButtons = document.querySelectorAll(".answers__item");
+  answerButtons.forEach((button) => {
+    button.disabled = true;
+  });
+}
 
-nextButton.addEventListener("click", () => {
+function enableAnswerButtons() {
+  let answerButtons = document.querySelectorAll(".answers__item");
+  answerButtons.forEach((button) => {
+    button.disabled = false;
+  });
+}
+
+function clearQuestion() {
+  questionElement.innerText = "";
+  answers.innerHTML = "";
+  numberOfQuestion.innerText = "";
+}
+
+function showResult() {
+  questionElement.innerText = `You answered correctly to ${correctAnswersCounter} out of ${DATA.length} questions.`;
+  nextButton.disabled = true;
+  restartButton.style.display = "block";
+  nextButton.style.display = "none";
+}
+
+function restartQuiz() {
+  currentQuestionIndex = 0;
+  correctAnswersCounter = 0;
+  restartButton.style.display = "none";
+  nextButton.style.display = "block";
+  startQuiz();
+}
+
+function startQuiz() {
+  clearQuestion();
+  enableAnswerButtons();
+  nextButton.disabled = true;
+  isAnswerSelected = false;
+  setNextQuestion();
+}
+
+
+nextButton.addEventListener("click", function () {
   if (isAnswerSelected) {
-    answers.innerHTML = "";
     currentQuestionIndex++;
-    setNextQuestion();
     isAnswerSelected = false;
-  } else {
-    alert("Пожалуйста, выберите ответ.");
+    clearQuestion();
+    if (currentQuestionIndex < DATA.length) {
+      setNextQuestion();
+    } else {
+      showResult();
+    }
   }
 });
 
+restartButton.addEventListener("click", function () {
+  restartQuiz();
+});
 
+restartQuiz();
