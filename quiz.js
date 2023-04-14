@@ -123,18 +123,23 @@ function hasMultipleCorrectAnswers(answers) {
   return answers.filter((answer) => answer.correct).length > 1;
 }
 
+function showInfo() {
+  let infoText = document.createElement("span");
+  infoText.classList.add("info");
+  infoText.innerHTML = "<br>* You can select more than one answer.";
+  questionElement.append(infoText);
+}
+
 function showQuestion(question) {
   let multipleAnswers = hasMultipleCorrectAnswers(question.answers);
 
   questionElement.innerText = question.question;
   numberOfQuestion.innerText = `${currentQuestionIndex + 1}/${DATA.length}`;
 
-  if (multipleAnswers) {
-    let infoText = document.createElement("span");
-    infoText.classList.add("info");
-    infoText.innerHTML = "<br>* You can select more than one answer.";
-    questionElement.append(infoText);
-  }
+  if (multipleAnswers) showInfo();
+
+  let selectedAnswers = 0;
+  let correctAnswers = question.answers.filter((answer) => answer.correct);
 
   question.answers.forEach((answer) => {
     let answerButton = document.createElement("button");
@@ -145,6 +150,12 @@ function showQuestion(question) {
     answerButton.addEventListener("click", function () {
       setStatus(answer, answerButton);
       isAnswerSelected = true;
+      selectedAnswers++;
+
+      if (selectedAnswers >= correctAnswers.length) {
+        disableAnswerButtons();
+        if(answer.correct) correctAnswersCounter++;
+      }
     });
 
     answers.append(answerButton);
@@ -154,34 +165,11 @@ function showQuestion(question) {
 function setStatus(answer, answerButton) {
   if (answer.correct) {
     answerButton.classList.add("correct");
-    correctAnswersCounter++;
   } else {
     answerButton.classList.add("wrong");
   }
 
-  disableAnswerButtons();
   nextButton.disabled = false;
-
-  if (currentQuestionIndex === DATA.length - 1) {
-    nextButton.innerText = "Next";
-  }
-
-}
-
-function setStatus(answer, answerButton) {
-  if (answer.correct) {
-    answerButton.classList.add("correct");
-    correctAnswersCounter++;
-  } else {
-    answerButton.classList.add("wrong");
-  }
-
-  disableAnswerButtons();
-  nextButton.disabled = false;
-
-  if (currentQuestionIndex === DATA.length - 1) {
-    nextButton.innerText = "Next";
-  }
 }
 
 function disableAnswerButtons() {
@@ -206,7 +194,6 @@ function clearQuestion() {
 
 function showResult() {
   questionElement.innerText = `You answered correctly to ${correctAnswersCounter} out of ${DATA.length} questions.`;
-  nextButton.disabled = true;
   restartButton.style.display = "block";
   nextButton.style.display = "none";
 }
@@ -226,7 +213,6 @@ function startQuiz() {
   isAnswerSelected = false;
   setNextQuestion();
 }
-
 
 nextButton.addEventListener("click", function () {
   if (isAnswerSelected) {
