@@ -63,27 +63,6 @@ const DATA = [
     ],
   },
   {
-    question: "How many chromosomes are in the human genome?",
-    answers: [
-      {
-        content: "47",
-        correct: false,
-      },
-      {
-        content: "45",
-        correct: false,
-      },
-      {
-        content: "46",
-        correct: true,
-      },
-      {
-        content: "44",
-        correct: false,
-      },
-    ],
-  },
-  {
     question: "Which of these characters are friends with Harry Potter?",
     answers: [
       {
@@ -104,6 +83,27 @@ const DATA = [
       },
     ],
   },
+  {
+    question: "How many chromosomes are in the human genome?",
+    answers: [
+      {
+        content: "47",
+        correct: false,
+      },
+      {
+        content: "45",
+        correct: false,
+      },
+      {
+        content: "46",
+        correct: true,
+      },
+      {
+        content: "44",
+        correct: false,
+      },
+    ],
+  },
 ];
 
 let questionElement = document.getElementById("question");
@@ -114,9 +114,43 @@ let nextButton = document.getElementById("next-btn");
 let restartButton = document.getElementById("restart-btn");
 let isAnswerSelected = false;
 let correctAnswersCounter = 0;
+let timeLeft = 10;
+let timerElement = document.getElementById("timer");
+let countDownIntervalId;
+
+function countDown() {
+  timeLeft--;
+  timerElement.textContent = timeLeft;
+  if (timeLeft === 0) {
+    clearInterval(countDown);
+    currentQuestionIndex++;
+    isAnswerSelected = false;
+    clearQuestion();
+    if (currentQuestionIndex < DATA.length) {
+      setNextQuestion();
+    } else {
+      stopCountDown();
+      showResult();
+    }
+    timeLeft = 10;
+  }
+}
+
+function startCountDown() {
+  timeLeft = 10;
+  timerElement.textContent = timeLeft;
+  countDownIntervalId = setInterval(countDown, 1000);
+}
+
+function stopCountDown() {
+  clearInterval(countDownIntervalId);
+}
 
 function setNextQuestion() {
+  stopCountDown();
+  timeLeft = 10;
   showQuestion(DATA[currentQuestionIndex]);
+  startCountDown();
 }
 
 function hasMultipleCorrectAnswers(answers) {
@@ -154,7 +188,7 @@ function showQuestion(question) {
 
       if (selectedAnswers >= correctAnswers.length) {
         disableAnswerButtons();
-        if(answer.correct) correctAnswersCounter++;
+        if (answer.correct) correctAnswersCounter++;
       }
     });
 
@@ -193,6 +227,7 @@ function clearQuestion() {
 }
 
 function showResult() {
+  timerElement.style.display = 'none';
   questionElement.innerText = `You answered correctly to ${correctAnswersCounter} out of ${DATA.length} questions.`;
   restartButton.style.display = "block";
   nextButton.style.display = "none";
@@ -201,6 +236,7 @@ function showResult() {
 function restartQuiz() {
   currentQuestionIndex = 0;
   correctAnswersCounter = 0;
+  timerElement.style.display = 'block';
   restartButton.style.display = "none";
   nextButton.style.display = "block";
   startQuiz();
@@ -212,6 +248,23 @@ function startQuiz() {
   nextButton.disabled = true;
   isAnswerSelected = false;
   setNextQuestion();
+}
+
+const toggleButton = document.getElementById("theme-toggle");
+
+function toggleTheme() {
+  const body = document.querySelector("body");
+  body.classList.toggle("dark-theme");
+  const isDarkTheme = body.classList.contains("dark-theme");
+  localStorage.setItem("isDarkTheme", isDarkTheme);
+}
+
+toggleButton.addEventListener("click", toggleTheme);
+
+const isDarkTheme = localStorage.getItem("isDarkTheme") === "true";
+const body = document.querySelector("body");
+if (isDarkTheme) {
+  body.classList.add("dark-theme");
 }
 
 nextButton.addEventListener("click", function () {

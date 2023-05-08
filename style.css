@@ -47,9 +47,6 @@ body {
   width: 100%;
   cursor: pointer;
 }
-.answers__item:hover{
-  background-color: #7b9b9b;
-}
 .quiz__btn-next {
   cursor: pointer;
   font-size: 16px;
@@ -108,4 +105,43 @@ body {
 }
 .hide {
   display: none;
+}
+
+#theme-toggle {
+  margin: 20px;
+  background-color: #000;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dark-theme {
+  background-color: #000;
+}
+
+.dark-theme .quiz {
+  background-color: #000;
+  color: #fff;
+  border: 3px solid #c9d9d9;
+}
+
+.dark-theme .answers {
+  color: #000;
+}
+
+.dark-theme #theme-toggle {
+  background-color: #fff;
+}
+
+.dark-theme .quiz__number-of-current-question {
+  color: #8b8787;
+}
+
+.dark-theme #timer {
+  color: #fff;
+}
+
+#timer {
+  font-size: 44px;
+  margin-left: 20px;
 }
